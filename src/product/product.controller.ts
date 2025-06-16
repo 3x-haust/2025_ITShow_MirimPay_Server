@@ -37,7 +37,6 @@ export class ProductController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.productService.findOne(id);
   }
