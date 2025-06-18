@@ -62,8 +62,12 @@ export class UserService {
     private paymentRepo: Repository<Payment>,
   ) {}
 
-  create(dto: CreateUserDto) {
-    const user = this.userRepo.create(dto);
+  async create(dto: CreateUserDto) {
+    const hashedPin = await bcrypt.hash(dto.pin, 10);
+    const user = this.userRepo.create({
+      ...dto,
+      pin: hashedPin,
+    });
     return this.userRepo.save(user);
   }
 
