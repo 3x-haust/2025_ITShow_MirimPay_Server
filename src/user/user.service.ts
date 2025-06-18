@@ -500,7 +500,7 @@ export class UserService {
           status: PaymentStatus.SUCCESS,
           tossPaymentKey: paymentData.paymentKey,
           tossResponse: JSON.stringify(paymentData),
-          userId: card.user.id,
+          userId: userId,
           cardId: card.id,
         },
       );
@@ -528,7 +528,7 @@ export class UserService {
         throw new InternalServerErrorException(`결제 실패: ${errorMessage}`);
       }
       throw new InternalServerErrorException(
-        '결제 처리 중 시스템 오류가 발생했습니다.',
+        '결제 처리 중 시스템 오류가 발생했습니다.' + error,
       );
     }
   }
@@ -974,8 +974,7 @@ export class UserService {
     }
 
     const hashedNewPin = await bcrypt.hash(newPin, 10);
-    user.pin = hashedNewPin;
-    await this.userRepo.save(user);
+    await this.userRepo.update(userId, { pin: hashedNewPin });
 
     return { success: true, message: 'PIN이 성공적으로 변경되었습니다.' };
   }
